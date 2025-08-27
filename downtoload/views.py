@@ -3,6 +3,7 @@ from .tasks import download_video_task
 from .utils.video_downloader import progress_data
 from django.http import HttpResponse, FileResponse, JsonResponse
 from .forms import VideoDownloadForm
+from .utils.video_downloader import download_video
 import os
 import uuid
 
@@ -32,29 +33,47 @@ def action_handler(request):
     else:
         return HttpResponse("Unknow action")
 
-
-
 def download_view(request):
+    message = ""
+    video_info = []
+
     if request.method == "POST":
         form = VideoDownloadForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data["url"]
-            task_id = str(uuid.uuid4())
+            action = request.POST.get("action")
 
-            try:
-                # Queue the task in Huey
-                task = download_video_task(url, task_id=task_id)  # returns AsyncResult
-                return JsonResponse({
-                    "task_id": task.id,
-                    "status": "queued",
-                    "message": "Your video is being downloaded."
-                })
-            except Exception as e:
-                return JsonResponse({"error": str(e)}, status=500)
+            if action == "download":
+                task_id = str(uuid.uuid4())
+                try:
+                    task = download_video_task(url, task_id=task_id)
+                    message = f"Video download queued. Task ID: {task.id}"
+                except Exception as e:
+                    message = f"Error: {str(e)}"
+
+            elif action == "view_info":
+                try:
+                    # Extract info immediately
+                    video_info = download_video(url, extract_flat=True)
+
+                    # Make sure each entry has title and url
+                    # video_info = []
+                    # for entry in info_list:
+                    #     video_info.append({
+                    #         "title": entry.get("title", "No title"),
+                    #         "url": entry.get("url") or entry.get("webpage_url") or "#"
+                    #     })
+
+                except Exception as e:
+                    message = f"Error fetching info: {str(e)}"
     else:
         form = VideoDownloadForm()
 
-    return render(request, "downtoload/download.html", {"form": form})
+    return render(
+        request,
+        "downtoload/download.html",
+        {"form": form, "message": message, "video_info": video_info}
+    )
 
 
 def download_progress(request, video_id):

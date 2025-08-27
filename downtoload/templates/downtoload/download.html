@@ -7,13 +7,30 @@
     <h1>Download Video</h1>
     <form method="post">
       {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Download</button>
+      <button type="submit" name="action" value="download">Download</button>
+      <button type="submit" name="action" value="view_info">View Info</button>
     </form>
 
     <p>{{ message }}</p>
 
+    {% if video_info %}
+    <h2>Video Info:</h2>
+    <ul>
+      {% for item in video_info %}
+      <li>
+        Title: {{ item.title }} <br />
+        URL:
+        <a href="{{ item.webpage_url }}" target="_blank"
+          >{{ item.webpage_url }}</a
+        >
+      </li>
+
+      {% endfor %}
+    </ul>
+    {% endif %}
+
     <button onclick="window.location.href='{% url 'home' %}'">
       Go to home
-  </button>
+    </button>
   </body>
 </html>

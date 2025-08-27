@@ -7,7 +7,7 @@ progress_data = {}
 
 
 # TODO: use temperory for downloading then move the file, moviing like this avoide conflicts
-def download_video(video_url: str, save_path=None, filename=None):
+def download_video(video_url: str, save_path=None, filename=None, extract_flat=False):
     """
     Downloads video from YouTube, Facebook, or other supported sites.
     Returns the full path to the downloaded video.
@@ -21,9 +21,9 @@ def download_video(video_url: str, save_path=None, filename=None):
     else:
         outtmpl = os.path.join(output_dir, "%(title)s.%(ext)s")
 
-# bestVudeo+basteaudio/best download the highest-quality video stream And the heighest-quality audio stream separately
+    # bestVudeo+basteaudio/best download the highest-quality video stream And the heighest-quality audio stream separately
 
-    # yt_dlp options
+    #========= yt_dlp options ==========
     ydl_opts = {
         "outtmpl": outtmpl,
         # "merge_output_format": "mp4",  # Only needed if you want to force mp4
@@ -37,13 +37,22 @@ def download_video(video_url: str, save_path=None, filename=None):
         "external_downloader_args": ["-x", "16", "-k", "1M"],  # 16 connections, 1MB segments
         # delete it to download all the paylist not one
         "noplaylist": True,
+        # "nonplaylist": not extract_flat,
     }
 
     with YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(video_url, download=True)
+        info = ydl.extract_info(video_url, download=not extract_flat)
+
+        if extract_flat:
+            if "entries" in info:      # playlist
+                return info["entries"]
+            else:                      # single video
+                return [info]
+
         file_path = ydl.prepare_filename(info)
         if not file_path.endswith(".mp4"):
             file_path = os.path.splitext(file_path)[0] + ".mp4"
         return file_path
 
-# this directly in the django view
+
+    # this directly in the django view
