@@ -2,51 +2,451 @@
 <html>
   <head>
     <title>Video Downloader</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      form {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      button {
+        background: #ff0000;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        font-weight: 500;
+      }
+
+      button:hover {
+        background: #cc0000;
+      }
+
+      .home-btn {
+        background: #666;
+      }
+
+      .home-btn:hover {
+        background: #555;
+      }
+
+      .video-card {
+        background: white;
+        border-radius: 12px;
+        padding: 50px;
+        margin: 20px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .video-header {
+        margin-bottom: 15px;
+      }
+
+      .video-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+
+      .video-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+      }
+
+      .meta-label {
+        font-weight: 600;
+        color: #666;
+        min-width: 100px;
+      }
+
+      .meta-value {
+        color: #333;
+      }
+
+      .meta-value a {
+        color: #1976d2;
+        text-decoration: none;
+      }
+
+      .meta-value a:hover {
+        text-decoration: underline;
+      }
+
+      .tags-container {
+        margin: 15px 0;
+      }
+
+      .tag {
+        display: inline-block;
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin: 2px;
+        border: 1px solid #bbdefb;
+      }
+
+      .categories-container {
+        margin: 15px 0;
+      }
+
+      .category {
+        display: inline-block;
+        background: #f3e5f5;
+        color: #7b1fa2;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        margin: 2px;
+        border: 1px solid #e1bee7;
+        font-weight: 500;
+      }
+
+      .description-toggle {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 10px 0;
+        font-weight: 500;
+        color: #666;
+      }
+
+      .description-toggle:hover {
+        background: #eeeeee;
+      }
+
+      .description-content {
+        display: none;
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 6px;
+        margin: 10px 0;
+        line-height: 1.5;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .description-content.show {
+        display: block;
+      }
+
+      iframe {
+        width: 100%;
+        height: 450px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .stats {
+        display: flex;
+        gap: 20px;
+        margin: 10px 0;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .stat-value {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .message {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin: 10px 0;
+        border-left: 4px solid #4caf50;
+      }
+    </style>
   </head>
   <body>
     <h1>Download Video</h1>
     <form method="post">
       {% csrf_token %} {{ form.as_p }}
-      <button type="submit" name="action" value="download">Download</button>
       <button type="submit" name="action" value="view_info">View Info</button>
+      <button type="submit" name="action" value="download">Download</button>
     </form>
 
-    <p>{{ message }}</p>
-
-    {% if video_info %}
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %} {% if video_info %}
     <h2>Video Info:</h2>
-    <ul>
-      {% for item in video_info %}
-      <li>
-        Title: {{ item.title }} <br />
-        URL:
-        <a href="{{ item.webpage_url }}" target="_blank"
-          >{{ item.webpage_url }}</a
-        >
-        <br />
-        Duration: <a>{{ item.duration }} s</a> <br />
-        Id: <a>{{ item.id }}</a> <br />
-        Uploader: <a>{{ item.uploader }}</a> <br />
-        Uploader Id: <a>{{ item.uploader_id }}</a> <br />
-        Channel Id: <a>{{ item.channel_id }}</a> <br />
-        View Count: <a>{{ item.view_count }}</a> <br />
-        Like Count: <a>{{ item.like_count }}</a> <br />
-        Dislike Count: <a>{{ item.dislike_count }}</a> <br />
-        Average Rating:: <a>{{ item.average_rating }}</a> <br />
-        Categories: <a>{{ item.categories }}</a> <br />
-        Tags: <a>{{ item.tags }}</a> <br />
-        Upload Date: <a>{{ item.upload_date }}</a> <br />
-        Age Limit: <a>{{ item.age_limit }}</a> <br />
-        Is Live: <a>{{ item.is_live }}</a> <br />
-        Description: <a>{{ item.description }} </a> <br />
-      </li>
 
-      {% endfor %}
-    </ul>
-    {% endif %}
+    {% for item in video_info %}
+    <div class="video-card">
+      {% if item.url or item.webpage_url %}
+      <iframe
+        src="https://www.youtube.com/embed/{{item.id}}"
+        frameborder="0"
+        allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      >
+      </iframe>
+      {% endif %}
 
-    <button onclick="window.location.href='{% url 'home' %}'">
-      Go to home
+      <div class="video-header">
+        <div class="video-title">{{ item.title }}</div>
+
+        <div class="stats">
+          {% if item.view_count %}
+          <div class="stat-item">
+            <span>👁️</span>
+            <span class="stat-value" id="views-{{ forloop.counter }}"
+              >{{ item.view_count }}</span
+            >
+            <span>views</span>
+          </div>
+          {% endif %} {% if item.like_count %}
+          <div class="stat-item">
+            <span>👍</span>
+            <span class="stat-value" id="likes-{{ forloop.counter }}"
+              >{{ item.like_count }}</span
+            >
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">URL:</span>
+          <span class="meta-value">
+            <a href="{{ item.webpage_url }}" target="_blank"
+              >{{ item.webpage_url }}</a
+            >
+          </span>
+        </div>
+      </div>
+
+      <div class="video-meta">
+        <div class="meta-item">
+          <span class="meta-label">Duration:</span>
+          <span class="meta-value" id="duration-{{ forloop.counter }}"
+            >{{ item.duration }} s</span
+          >
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">Uploader:</span>
+          <span class="meta-value">{{ item.uploader }}</span>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">Upload Date:</span>
+          <span class="meta-value" id="upload-date-{{ forloop.counter }}"
+            >{{ item.upload_date }}</span
+          >
+        </div>
+
+        {% if item.age_limit %}
+        <div class="meta-item">
+          <span class="meta-label">Age Limit:</span>
+          <span class="meta-value">{{ item.age_limit }}+</span>
+        </div>
+        {% endif %} {% if item.is_live %}
+        <div class="meta-item">
+          <span class="meta-label">Status:</span>
+          <span class="meta-value">Live</span>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if item.categories %}
+      <div class="categories-container">
+        <div class="meta-label">Categories:</div>
+        <div id="categories-{{ forloop.counter }}">
+          {% for category in item.categories %}
+          <span class="category">{{ category }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %} {% if item.tags %}
+      <div class="tags-container">
+        <div class="meta-label">Tags:</div>
+        <div id="tags-{{ forloop.counter }}">
+          {% for tag in item.tags %}
+          <span class="tag">#{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %} {% if item.description %}
+      <div
+        class="description-toggle"
+        onclick="toggleDescription('desc-{{ forloop.counter }}')"
+      >
+        Show Description
+      </div>
+      <div class="description-content" id="desc-{{ forloop.counter }}">
+        {{ item.description|linebreaksbr }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %} {% endif %}
+
+    <button class="home-btn" onclick="window.location.href='{% url 'home' %}'">
+      Go to Home
     </button>
+
+    <script>
+      // Function to format numbers like social media (1.2K, 1.2M, etc.)
+      function formatCount(num) {
+        if (num >= 1000000000) {
+          return (num / 1000000000).toFixed(1).replace(/\.0$/, "") + "B";
+        }
+        if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+        }
+        if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+        }
+        return num.toString();
+      }
+
+      // Function to format duration from seconds to readable format
+      function formatDuration(seconds) {
+        if (!seconds) return "N/A";
+
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        if (hours > 0) {
+          return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+            .toString()
+            .padStart(2, "0")}`;
+        } else {
+          return `${minutes}:${secs.toString().padStart(2, "0")}`;
+        }
+      }
+
+      // Function to format upload date
+      function formatUploadDate(dateStr) {
+        if (!dateStr) return "N/A";
+
+        // Assuming format is YYYYMMDD
+        if (dateStr.length === 8) {
+          const year = dateStr.substring(0, 4);
+          const month = dateStr.substring(4, 6);
+          const day = dateStr.substring(6, 8);
+          return `${day}/${month}/${year}`;
+        }
+        return dateStr;
+      }
+
+      // Function to toggle description visibility
+      function toggleDescription(descId) {
+        const desc = document.getElementById(descId);
+        const toggle = desc.previousElementSibling;
+
+        if (desc.classList.contains("show")) {
+          desc.classList.remove("show");
+          toggle.innerHTML = " Show Description";
+        } else {
+          desc.classList.add("show");
+          toggle.innerHTML = " Hide Description";
+        }
+      }
+
+      // Function to split and format tags/categories if they come as a single string
+      function formatTagsAndCategories() {
+        // Format tags
+        document.querySelectorAll('[id^="tags-"]').forEach((tagContainer) => {
+          const content = tagContainer.textContent.trim();
+          if (content && !content.includes("#")) {
+            // If it's a comma-separated string
+            if (content.includes(",")) {
+              const tags = content.split(",").map((tag) => tag.trim());
+              tagContainer.innerHTML = tags
+                .map((tag) => `<span class="tag">#${tag}</span>`)
+                .join("");
+            }
+          }
+        });
+
+        // Format categories
+        document
+          .querySelectorAll('[id^="categories-"]')
+          .forEach((catContainer) => {
+            const content = catContainer.textContent.trim();
+            if (content && !catContainer.querySelector(".category")) {
+              // If it's a comma-separated string
+              if (content.includes(",")) {
+                const categories = content.split(",").map((cat) => cat.trim());
+                catContainer.innerHTML = categories
+                  .map((cat) => `<span class="category">${cat}</span>`)
+                  .join("");
+              } else if (content) {
+                catContainer.innerHTML = `<span class="category">${content}</span>`;
+              }
+            }
+          });
+      }
+
+      // Apply formatting when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        // Format view counts and like counts
+        document
+          .querySelectorAll('[id^="views-"], [id^="likes-"]')
+          .forEach((el) => {
+            const count = parseInt(el.textContent);
+            if (!isNaN(count)) {
+              el.textContent = formatCount(count);
+            }
+          });
+
+        // Format duration
+        document.querySelectorAll('[id^="duration-"]').forEach((el) => {
+          const seconds = parseInt(el.textContent);
+          if (!isNaN(seconds)) {
+            el.textContent = formatDuration(seconds);
+          }
+        });
+
+        // Format upload dates
+        document.querySelectorAll('[id^="upload-date-"]').forEach((el) => {
+          el.textContent = formatUploadDate(el.textContent);
+        });
+
+        // Format tags and categories
+        formatTagsAndCategories();
+      });
+    </script>
   </body>
 </html>
