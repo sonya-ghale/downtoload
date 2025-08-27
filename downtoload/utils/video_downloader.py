@@ -2,8 +2,11 @@ import os
 from yt_dlp import YoutubeDL
 from django.conf import settings
 
-# TODO: use temperory for downloading then move the file, moviing like this avoide conflicts
+# need progress_data to be dictinoary that stores the dowload pogress
+progress_data = {}
 
+
+# TODO: use temperory for downloading then move the file, moviing like this avoide conflicts
 def download_video(video_url: str):
     """
     Downloads video from YouTube, Facebook, or other supported sites.
@@ -13,19 +16,23 @@ def download_video(video_url: str):
     output_dir = os.path.join(settings.BASE_DIR, "downtoload", "downloads")
     os.makedirs(output_dir, exist_ok=True)
 
+
 # bestVudeo+basteaudio/best download the highest-quality video stream And the heighest-quality audio stream separately
 
     # yt_dlp options
     ydl_opts = {
         "outtmpl": os.path.join(output_dir, "%(title)s.%(ext)s"),
         # "merge_output_format": "mp4",  # Only needed if you want to force mp4
-        "format": "best",
+        # "format": "best",
+        "format": "bestvideo+bestaudio/best",
         "quiet": True,
         "no_warnings": True,
         "ffmpeg_location": r"D:\Applications\ffmpeg\bin\ffmpeg.exe",
         "concurrent_fragment_downloads": 8,  # Parallel fragment downloads (try 5-10)
         "external_downloader": "aria2c",  # Use aria2c if installed
         "external_downloader_args": ["-x", "16", "-k", "1M"],  # 16 connections, 1MB segments
+        # delete it to download all the paylist not one
+        "noplaylist": True,
     }
 
     with YoutubeDL(ydl_opts) as ydl:

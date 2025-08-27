@@ -4,6 +4,7 @@ from .utils.video_downloader import progress_data
 from django.http import HttpResponse, FileResponse, JsonResponse
 from .forms import VideoDownloadForm
 import os
+import uuid
 
 def home(request):
     # render's a template with contect
@@ -33,15 +34,16 @@ def action_handler(request):
 
 
 
-
 def download_view(request):
     if request.method == "POST":
         form = VideoDownloadForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data["url"]
+            task_id = str(uuid.uuid4())
+
             try:
                 # Queue the task in Huey
-                task = download_video_task(url)  # returns AsyncResult
+                task = download_video_task(url, task_id=task_id)  # returns AsyncResult
                 return JsonResponse({
                     "task_id": task.id,
                     "status": "queued",
@@ -55,9 +57,9 @@ def download_view(request):
     return render(request, "downtoload/download.html", {"form": form})
 
 
-# def download_progress(request, video_id):
-#     """
-#     Returns Json with progress information for a video download.
-#     """
-#     data = progress_data.get(video_id, {"status": "not_found"})
-#     return JsonResponse(data)
+def download_progress(request, video_id):
+    """
+    Returns Json with progress information for a video download.
+    """
+    data = progress_data.get(video_id, {"status": "not_found"})
+    return JsonResponse(data)
