@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Downloader</title>
+  </head>
+  <body>
+    <h1>Download Video</h1>
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Download</button>
+    </form>
+
+    <p>{{ message }}</p>
+
+    <button onclick="window.location.href='{% url 'home' %}'">
+      Go to home
+  </button>
+  </body>
+</html>

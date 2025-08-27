@@ -1,0 +1,12 @@
+[project]
+name = "downtube"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2.5",
+    "django-browser-reload>=1.18.0",
+    "huey>=2.5.3",
+    "yt-dlp>=2025.8.22",
+]

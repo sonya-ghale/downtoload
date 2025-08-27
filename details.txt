@@ -1,0 +1,9 @@
+First install 
+pip install yt-dlp
+
+Then for merging the video/audio
+downloading ffmpeg
+https://www.gyan.dev/ffmpeg/builds/#release-builds
+
+always install packages inside the virtual environment
+.\myvenv\Scripts\Activate.ps1
