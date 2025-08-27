@@ -7,21 +7,25 @@ progress_data = {}
 
 
 # TODO: use temperory for downloading then move the file, moviing like this avoide conflicts
-def download_video(video_url: str):
+def download_video(video_url: str, save_path=None, filename=None):
     """
     Downloads video from YouTube, Facebook, or other supported sites.
     Returns the full path to the downloaded video.
     """
     # Define download folder
-    output_dir = os.path.join(settings.BASE_DIR, "downtoload", "downloads")
+    output_dir = save_path or os.path.join(settings.BASE_DIR, "downtoload", "media")
     os.makedirs(output_dir, exist_ok=True)
 
+    if filename:
+        outtmpl = os.path.join(output_dir, filename)
+    else:
+        outtmpl = os.path.join(output_dir, "%(title)s.%(ext)s")
 
 # bestVudeo+basteaudio/best download the highest-quality video stream And the heighest-quality audio stream separately
 
     # yt_dlp options
     ydl_opts = {
-        "outtmpl": os.path.join(output_dir, "%(title)s.%(ext)s"),
+        "outtmpl": outtmpl,
         # "merge_output_format": "mp4",  # Only needed if you want to force mp4
         # "format": "best",
         "format": "bestvideo+bestaudio/best",
