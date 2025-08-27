@@ -56,14 +56,6 @@ def download_view(request):
                     # Extract info immediately
                     video_info = download_video(url, extract_flat=True)
 
-                    # Make sure each entry has title and url
-                    # video_info = []
-                    # for entry in info_list:
-                    #     video_info.append({
-                    #         "title": entry.get("title", "No title"),
-                    #         "url": entry.get("url") or entry.get("webpage_url") or "#"
-                    #     })
-
                 except Exception as e:
                     message = f"Error fetching info: {str(e)}"
     else:

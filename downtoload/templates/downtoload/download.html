@@ -23,6 +23,22 @@
         <a href="{{ item.webpage_url }}" target="_blank"
           >{{ item.webpage_url }}</a
         >
+        <br />
+        Duration: <a>{{ item.duration }} s</a> <br />
+        Id: <a>{{ item.id }}</a> <br />
+        Uploader: <a>{{ item.uploader }}</a> <br />
+        Uploader Id: <a>{{ item.uploader_id }}</a> <br />
+        Channel Id: <a>{{ item.channel_id }}</a> <br />
+        View Count: <a>{{ item.view_count }}</a> <br />
+        Like Count: <a>{{ item.like_count }}</a> <br />
+        Dislike Count: <a>{{ item.dislike_count }}</a> <br />
+        Average Rating:: <a>{{ item.average_rating }}</a> <br />
+        Categories: <a>{{ item.categories }}</a> <br />
+        Tags: <a>{{ item.tags }}</a> <br />
+        Upload Date: <a>{{ item.upload_date }}</a> <br />
+        Age Limit: <a>{{ item.age_limit }}</a> <br />
+        Is Live: <a>{{ item.is_live }}</a> <br />
+        Description: <a>{{ item.description }} </a> <br />
       </li>
 
       {% endfor %}
