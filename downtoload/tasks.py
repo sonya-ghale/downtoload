@@ -2,7 +2,7 @@ from .huey_instance import huey
 from .utils.video_downloader import download_video, progress_data
 from django.http import JsonResponse
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 
 from django.conf import settings
 from huey import crontab
